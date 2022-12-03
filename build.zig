@@ -9,7 +9,7 @@ pub fn build(b: *std.build.Builder) void {
 
     const cwd = std.fs.cwd();
 
-    var day: u8 = 1;
+    var day: u8 = 0;
     const days = 25;
     while (day <= days) : (day += 1) {
         const day_str = b.fmt("day{}", .{day});

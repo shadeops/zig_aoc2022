@@ -39,9 +39,8 @@ fn solve_1(allocator: std.mem.Allocator, data: []const u8) !u64 {
     _ = allocator;
 
     var total_score: u64 = 0;
-    var lines = std.mem.split(u8, data, "\n");
+    var lines = std.mem.tokenize(u8, data, "\n");
     while (lines.next()) |line| {
-        if (line.len == 0) continue;
         const player1 = try getPlay(line[0]);
         const player2 = try getPlay(line[2]);
         total_score += getScore(player1, player2);
@@ -76,9 +75,8 @@ fn solve_2(allocator: std.mem.Allocator, data: []const u8) !u64 {
     _ = allocator;
 
     var total_score: u64 = 0;
-    var lines = std.mem.split(u8, data, "\n");
+    var lines = std.mem.tokenize(u8, data, "\n");
     while (lines.next()) |line| {
-        if (line.len == 0) continue;
         const player1 = try getPlay(line[0]);
         const player2 = try derivePlay(player1, line[2]);
         total_score += getScore(player1, player2);
