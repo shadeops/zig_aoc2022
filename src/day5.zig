@@ -118,9 +118,11 @@ fn solve_2(allocator: std.mem.Allocator, data: []const u8) ![]const u8 {
         var c = col_iter.next() orelse return error.MissingColumn;
         c = col_iter.next() orelse return error.MissingColumn;
         var moves = try std.fmt.parseUnsigned(u32, c, 10);
+
         c = col_iter.next() orelse return error.MissingColumn;
         c = col_iter.next() orelse return error.MissingColumn;
         var from = try std.fmt.parseUnsigned(u32, c, 10) - 1;
+
         c = col_iter.next() orelse return error.MissingColumn;
         c = col_iter.next() orelse return error.MissingColumn;
         var to = try std.fmt.parseUnsigned(u32, c, 10) - 1;
