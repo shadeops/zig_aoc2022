@@ -8,15 +8,13 @@ const AlphaBits = std.StaticBitSet(26);
 fn solve_1(allocator: std.mem.Allocator, data: []const u8) !u64 {
     _ = allocator;
 
+    const window = 4;
     var bits = AlphaBits.initEmpty();
-    for (data[4..]) |_, i| {
-        for (data[i .. i + 4]) |c| {
-            bits.set(c - 'a');
-        }
-        if (bits.count() == 4) {
-            return i + 4;
-        }
-        bits.mask = 0;
+    for (data[0..window]) |c| bits.toggle(c - 'a');
+    for (data) |c, i| {
+        if (bits.count() == window) return i + window;
+        bits.toggle(c - 'a');
+        bits.toggle(data[i + window] - 'a');
     }
     return error.NotFound;
 }
@@ -24,15 +22,13 @@ fn solve_1(allocator: std.mem.Allocator, data: []const u8) !u64 {
 fn solve_2(allocator: std.mem.Allocator, data: []const u8) !u64 {
     _ = allocator;
 
+    const window = 14;
     var bits = AlphaBits.initEmpty();
-    for (data[14..]) |_, i| {
-        for (data[i .. i + 14]) |c| {
-            bits.set(c - 'a');
-        }
-        if (bits.count() == 14) {
-            return i + 14;
-        }
-        bits.mask = 0;
+    for (data[0..window]) |c| bits.toggle(c - 'a');
+    for (data) |c, i| {
+        if (bits.count() == window) return i + window;
+        bits.toggle(c - 'a');
+        bits.toggle(data[i + window] - 'a');
     }
     return error.NotFound;
 }
