@@ -1,16 +1,8 @@
 const std = @import("std");
+const utils = @import("utils.zig");
 
 const unit_name = @typeName(@This());
 const data_path = &("data/".* ++ unit_name.*);
-
-fn str_split(buf: []const u8, delimiter: []const u8) ![2][]const u8 {
-    var ret = [_][]const u8{undefined} ** 2;
-    var token_iter = std.mem.tokenize(u8, buf, delimiter);
-    ret[0] = token_iter.next() orelse return error.SplitError;
-    ret[1] = token_iter.next() orelse return error.SplitError;
-    if (token_iter.next() != null) return error.SplitError;
-    return ret;
-}
 
 const NodeType = enum {
     file,
@@ -174,7 +166,7 @@ fn build_fs(allocator: std.mem.Allocator, data: []const u8) !*const INode {
             var new_dir: *INode = try cwd.mkdir(allocator, line[4..]);
             try cwd.node.dir.nodes.append(new_dir);
         } else {
-            var tokens = try str_split(line, " ");
+            var tokens = try utils.str_split(line, " ");
             var file_size = try std.fmt.parseUnsigned(u32, tokens[0], 10);
             var new_file = try cwd.mkfile(allocator, tokens[1], file_size);
             try cwd.node.dir.nodes.append(new_file);

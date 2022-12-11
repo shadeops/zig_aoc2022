@@ -1,16 +1,8 @@
 const std = @import("std");
+const utils = @import("utils.zig");
 
 const unit_name = @typeName(@This());
 const data_path = &("data/".* ++ unit_name.*);
-
-fn split(buf: []const u8, delimiter: []const u8) ![2][]const u8 {
-    var ret = [_][]const u8{undefined} ** 2;
-    var token_iter = std.mem.tokenize(u8, buf, delimiter);
-    ret[0] = token_iter.next() orelse return error.SplitError;
-    ret[1] = token_iter.next() orelse return error.SplitError;
-    if (token_iter.next() != null) return error.SplitError;
-    return ret;
-}
 
 fn solve_1(allocator: std.mem.Allocator, data: []const u8) !u64 {
     _ = allocator;
@@ -18,10 +10,10 @@ fn solve_1(allocator: std.mem.Allocator, data: []const u8) !u64 {
     var overlaps: u32 = 0;
     var lines = std.mem.tokenize(u8, data, "\n");
     while (lines.next()) |line| {
-        const sections = try split(line, ",");
+        const sections = try utils.str_split(line, ",");
 
-        const elf1 = try split(sections[0], "-");
-        const elf2 = try split(sections[1], "-");
+        const elf1 = try utils.str_split(sections[0], "-");
+        const elf2 = try utils.str_split(sections[1], "-");
 
         const elf1_start = try std.fmt.parseUnsigned(u32, elf1[0], 10);
         const elf1_end = try std.fmt.parseUnsigned(u32, elf1[1], 10);
@@ -47,10 +39,10 @@ fn solve_2(allocator: std.mem.Allocator, data: []const u8) !u64 {
     var overlaps: u32 = 0;
     var lines = std.mem.tokenize(u8, data, "\n");
     while (lines.next()) |line| {
-        const sections = try split(line, ",");
+        const sections = try utils.str_split(line, ",");
 
-        const elf1 = try split(sections[0], "-");
-        const elf2 = try split(sections[1], "-");
+        const elf1 = try utils.str_split(sections[0], "-");
+        const elf2 = try utils.str_split(sections[1], "-");
 
         const elf1_start = try std.fmt.parseUnsigned(u32, elf1[0], 10);
         const elf1_end = try std.fmt.parseUnsigned(u32, elf1[1], 10);

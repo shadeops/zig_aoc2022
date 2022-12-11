@@ -5,24 +5,9 @@ const data_path = &("data/".* ++ unit_name.*);
 
 const AlphaBits = std.StaticBitSet(26);
 
-fn solve_1(allocator: std.mem.Allocator, data: []const u8) !u64 {
+fn solve(allocator: std.mem.Allocator, data: []const u8, window: u8) !u64 {
     _ = allocator;
 
-    const window = 4;
-    var bits = AlphaBits.initEmpty();
-    for (data[0..window]) |c| bits.toggle(c - 'a');
-    for (data) |c, i| {
-        if (bits.count() == window) return i + window;
-        bits.toggle(c - 'a');
-        bits.toggle(data[i + window] - 'a');
-    }
-    return error.NotFound;
-}
-
-fn solve_2(allocator: std.mem.Allocator, data: []const u8) !u64 {
-    _ = allocator;
-
-    const window = 14;
     var bits = AlphaBits.initEmpty();
     for (data[0..window]) |c| bits.toggle(c - 'a');
     for (data) |c, i| {
@@ -52,8 +37,8 @@ pub fn main() !void {
     const stdout = stdout_bw.writer();
 
     try stdout.print("{s}:\n", .{unit_name});
-    try stdout.print("\tpart_1 = {}\n", .{try solve_1(allocator, data)});
-    try stdout.print("\tpart_2 = {}\n", .{try solve_2(allocator, data)});
+    try stdout.print("\tpart_1 = {}\n", .{try solve(allocator, data, 4)});
+    try stdout.print("\tpart_2 = {}\n", .{try solve(allocator, data, 14)});
     try stdout_bw.flush();
 }
 
@@ -74,35 +59,35 @@ const test_data4 =
 ;
 
 test "part_1" {
-    var result = try solve_1(std.testing.allocator, test_data0[0..]);
+    var result = try solve(std.testing.allocator, test_data0[0..], 4);
     try std.testing.expectEqual(@as(u64, 7), result);
 
-    result = try solve_1(std.testing.allocator, test_data1[0..]);
+    result = try solve(std.testing.allocator, test_data1[0..], 4);
     try std.testing.expectEqual(@as(u64, 5), result);
 
-    result = try solve_1(std.testing.allocator, test_data2[0..]);
+    result = try solve(std.testing.allocator, test_data2[0..], 4);
     try std.testing.expectEqual(@as(u64, 6), result);
 
-    result = try solve_1(std.testing.allocator, test_data3[0..]);
+    result = try solve(std.testing.allocator, test_data3[0..], 4);
     try std.testing.expectEqual(@as(u64, 10), result);
 
-    result = try solve_1(std.testing.allocator, test_data4[0..]);
+    result = try solve(std.testing.allocator, test_data4[0..], 4);
     try std.testing.expectEqual(@as(u64, 11), result);
 }
 
 test "part_2" {
-    var result = try solve_2(std.testing.allocator, test_data0[0..]);
+    var result = try solve(std.testing.allocator, test_data0[0..], 14);
     try std.testing.expectEqual(@as(u64, 19), result);
 
-    result = try solve_2(std.testing.allocator, test_data1[0..]);
+    result = try solve(std.testing.allocator, test_data1[0..], 14);
     try std.testing.expectEqual(@as(u64, 23), result);
 
-    result = try solve_2(std.testing.allocator, test_data2[0..]);
+    result = try solve(std.testing.allocator, test_data2[0..], 14);
     try std.testing.expectEqual(@as(u64, 23), result);
 
-    result = try solve_2(std.testing.allocator, test_data3[0..]);
+    result = try solve(std.testing.allocator, test_data3[0..], 14);
     try std.testing.expectEqual(@as(u64, 29), result);
 
-    result = try solve_2(std.testing.allocator, test_data4[0..]);
+    result = try solve(std.testing.allocator, test_data4[0..], 14);
     try std.testing.expectEqual(@as(u64, 26), result);
 }

@@ -1,4 +1,5 @@
 const std = @import("std");
+const utils = @import("utils.zig");
 
 const unit_name = @typeName(@This());
 const data_path = &("data/".* ++ unit_name.*);
@@ -40,15 +41,6 @@ const Board = struct {
         std.debug.print("\n", .{});
     }
 };
-
-fn str_split(buf: []const u8, delimiter: []const u8) ![2][]const u8 {
-    var ret = [_][]const u8{undefined} ** 2;
-    var token_iter = std.mem.tokenize(u8, buf, delimiter);
-    ret[0] = token_iter.next() orelse return error.SplitError;
-    ret[1] = token_iter.next() orelse return error.SplitError;
-    if (token_iter.next() != null) return error.SplitError;
-    return ret;
-}
 
 fn toIdx(row: u32, col: u32, cols: u32) u32 {
     return row * cols + col;
@@ -123,7 +115,7 @@ fn solve_1(allocator: std.mem.Allocator, data: []const u8) !u64 {
     var lines = std.mem.tokenize(u8, data, "\n");
     while (lines.next()) |line| {
         if (line.len == 0) continue;
-        const tokens = try str_split(line, " ");
+        const tokens = try utils.str_split(line, " ");
         var dist: i32 = try std.fmt.parseInt(i32, tokens[1], 10);
         switch (tokens[0][0]) {
             'D' => {
@@ -176,7 +168,7 @@ fn solve_1(allocator: std.mem.Allocator, data: []const u8) !u64 {
     lines.reset();
     while (lines.next()) |line| {
         if (line.len == 0) continue;
-        const tokens = try str_split(line, " ");
+        const tokens = try utils.str_split(line, " ");
         var dist: u32 = try std.fmt.parseUnsigned(u8, tokens[1], 10);
         var i: u8 = 0;
 
@@ -211,7 +203,7 @@ fn solve_2(allocator: std.mem.Allocator, data: []const u8) !u64 {
     var lines = std.mem.tokenize(u8, data, "\n");
     while (lines.next()) |line| {
         if (line.len == 0) continue;
-        const tokens = try str_split(line, " ");
+        const tokens = try utils.str_split(line, " ");
         var dist: i32 = try std.fmt.parseInt(i32, tokens[1], 10);
         switch (tokens[0][0]) {
             'D' => {
@@ -261,7 +253,7 @@ fn solve_2(allocator: std.mem.Allocator, data: []const u8) !u64 {
     lines.reset();
     while (lines.next()) |line| {
         if (line.len == 0) continue;
-        const tokens = try str_split(line, " ");
+        const tokens = try utils.str_split(line, " ");
         var dist: u32 = try std.fmt.parseUnsigned(u8, tokens[1], 10);
         var i: u8 = 0;
 
