@@ -19,7 +19,7 @@ const Operation = enum {
 const max_size = 32;
 
 const Monkey = struct {
-    queue: std.fifo.LinearFifo(u64, .{.Static = max_size}),
+    queue: std.fifo.LinearFifo(u64, .{ .Static = max_size }),
     op: Operation,
     operand: ?u32,
     div: u32,
@@ -36,8 +36,11 @@ const Monkey = struct {
             _ = std.math.divExact(u64, item, self.div) catch {
                 exact = false;
             };
-            if (exact) try monkeys.items[self.true_target].queue.writeItem(item)
-            else try monkeys.items[self.false_target].queue.writeItem(item);
+            if (exact) {
+                try monkeys.items[self.true_target].queue.writeItem(item);
+            } else {
+                try monkeys.items[self.false_target].queue.writeItem(item);
+            }
         }
     }
 
@@ -48,11 +51,9 @@ const Monkey = struct {
             .multi => item * (self.operand orelse item),
         }) / self.worry_reduction;
     }
-
 };
 
 fn solver(allocator: std.mem.Allocator, data: []const u8, worry_level: u32, rounds: u32) !u64 {
-    
     var monkeys = std.ArrayList(Monkey).init(allocator);
     defer monkeys.deinit();
 
@@ -63,9 +64,9 @@ fn solver(allocator: std.mem.Allocator, data: []const u8, worry_level: u32, roun
     var factor: u32 = 1;
     while (lines.next()) |line| {
         if (line[0] == 'M') {
-            monkey_num = try std.fmt.parseUnsigned(u32, line[7..(line.len-1)], 10);
+            monkey_num = try std.fmt.parseUnsigned(u32, line[7..(line.len - 1)], 10);
             try monkeys.append(.{
-                .queue = std.fifo.LinearFifo(u64, .{.Static = max_size}).init(),
+                .queue = std.fifo.LinearFifo(u64, .{ .Static = max_size }).init(),
                 .op = undefined,
                 .operand = undefined,
                 .div = undefined,
@@ -85,7 +86,7 @@ fn solver(allocator: std.mem.Allocator, data: []const u8, worry_level: u32, roun
             next_line = lines.next() orelse return error.ParseError;
             monkeys.items[monkey_num].op = Operation.getOp(next_line[23]);
             monkeys.items[monkey_num].operand = std.fmt.parseUnsigned(u32, next_line[25..], 10) catch null;
-       
+
             // Test
             next_line = lines.next() orelse return error.ParseError;
             monkeys.items[monkey_num].div = try std.fmt.parseUnsigned(u32, next_line[21..], 10);
@@ -94,17 +95,15 @@ fn solver(allocator: std.mem.Allocator, data: []const u8, worry_level: u32, roun
             // True
             next_line = lines.next() orelse return error.ParseError;
             monkeys.items[monkey_num].true_target = try std.fmt.parseUnsigned(u32, next_line[29..], 10);
-            
-            // False 
+
+            // False
             next_line = lines.next() orelse return error.ParseError;
             monkeys.items[monkey_num].false_target = try std.fmt.parseUnsigned(u32, next_line[30..], 10);
         }
     }
     var round: u32 = 0;
-    while (round < rounds) : (round+=1) {
+    while (round < rounds) : (round += 1) {
         for (monkeys.items) |*monkey| {
-            if (round == 10) {
-            }
             try monkey.toss(&monkeys, factor);
         }
     }
@@ -114,7 +113,7 @@ fn solver(allocator: std.mem.Allocator, data: []const u8, worry_level: u32, roun
         try handled.append(monkey.handled);
     }
     std.sort.sort(u64, handled.items, {}, comptime std.sort.desc(u64));
-    
+
     return handled.items[0] * handled.items[1];
 }
 
