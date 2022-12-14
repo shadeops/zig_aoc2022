@@ -6,12 +6,12 @@ const data_path = &("data/".* ++ unit_name.*);
 
 fn getList(str: []const u8) ![]const u8 {
     var count: usize = 0;
-    var end = blk: for (str) |c,i| {
+    var end = blk: for (str) |c, i| {
         switch (c) {
-            '[' => count +=1,
+            '[' => count += 1,
             ']' => {
-                count -=1;
-                if (count == 0) break :blk i+1;
+                count -= 1;
+                if (count == 0) break :blk i + 1;
             },
             else => continue,
         }
@@ -26,27 +26,26 @@ const ListIterator = struct {
     str: []const u8,
 
     fn next(self: *ListIterator) ?[]const u8 {
-
         if (self.index >= self.str.len) {
-            return null; 
+            return null;
         }
 
-        for (self.str[self.index .. self.str.len-1]) |c,i| {
+        for (self.str[self.index .. self.str.len - 1]) |c, i| {
             switch (c) {
-                '[' => { 
-                    var sub_list = getList(self.str[self.index+i..]) catch unreachable;
+                '[' => {
+                    var sub_list = getList(self.str[self.index + i ..]) catch unreachable;
                     self.index += sub_list.len;
                     // We could be at the so we need to check if there is more after
                     // what we got from the sub_list.
-                    if (self.index < self.str.len-1) {
+                    if (self.index < self.str.len - 1) {
                         self.index += 1;
                     }
                     return sub_list;
                 },
                 ']' => unreachable, //unbalanced parens
                 ',' => {
-                    var val = self.str[self.index .. self.index+i];
-                    self.index = self.index+i+1;
+                    var val = self.str[self.index .. self.index + i];
+                    self.index = self.index + i + 1;
                     return val;
                 },
                 '0'...'9' => continue,
@@ -63,9 +62,9 @@ const ListIterator = struct {
 };
 
 fn listIterator(str: []const u8) ListIterator {
-    if (str[0] == '[' and str[str.len-1] == ']')
-        return .{.str = str[1..str.len-1]};
-    return .{.str = str};
+    if (str[0] == '[' and str[str.len - 1] == ']')
+        return .{ .str = str[1 .. str.len - 1] };
+    return .{ .str = str };
 }
 
 // Here our compare function returns true if left is less than
@@ -79,7 +78,6 @@ fn listIterator(str: []const u8) ListIterator {
 //  and return those values to compare against instead of using
 //  and optional bool.
 fn compare(left: []const u8, right: []const u8) !?bool {
-  
     var left_iter = listIterator(left);
     var right_iter = listIterator(right);
 
@@ -94,19 +92,19 @@ fn compare(left: []const u8, right: []const u8) !?bool {
         if (l.?[0] == '[' and r.?[0] == '[') {
             return (try compare(l.?, r.?)) orelse continue;
         }
-        
+
         // mixed
         if (l.?[0] == '[' or r.?[0] == '[') {
             return (try compare(l.?, r.?)) orelse continue;
         }
-        
+
         var l_val = try std.fmt.parseUnsigned(u32, l.?, 10);
         var r_val = try std.fmt.parseUnsigned(u32, r.?, 10);
-        
+
         if (l_val > r_val) {
             return false;
         }
-        
+
         if (l_val < r_val) {
             return true;
         }
@@ -132,14 +130,12 @@ fn solve_1(allocator: std.mem.Allocator, data: []const u8) !u64 {
     return valid;
 }
 
-
 fn lessThan(context: void, a: []const u8, b: []const u8) bool {
     _ = context;
     return (compare(a, b) catch false) orelse false;
 }
 
 fn solve_2(allocator: std.mem.Allocator, data: []const u8) !u64 {
-
     var msgs = std.ArrayList([]const u8).init(allocator);
     defer msgs.deinit();
 
@@ -150,11 +146,11 @@ fn solve_2(allocator: std.mem.Allocator, data: []const u8) !u64 {
     try msgs.append("[[2]]");
     try msgs.append("[[6]]");
 
-    std.sort.sort([]const u8, msgs.items, {}, lessThan); 
+    std.sort.sort([]const u8, msgs.items, {}, lessThan);
     var total: usize = 1;
-    for (msgs.items) |item,i| {
-        if (std.mem.eql(u8, item, "[[2]]")) total *= i+1;
-        if (std.mem.eql(u8, item, "[[6]]")) total *= i+1;
+    for (msgs.items) |item, i| {
+        if (std.mem.eql(u8, item, "[[2]]")) total *= i + 1;
+        if (std.mem.eql(u8, item, "[[6]]")) total *= i + 1;
     }
 
     return total;

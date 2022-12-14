@@ -166,7 +166,7 @@ fn build_fs(allocator: std.mem.Allocator, data: []const u8) !*const INode {
             var new_dir: *INode = try cwd.mkdir(allocator, line[4..]);
             try cwd.node.dir.nodes.append(new_dir);
         } else {
-            var tokens = try utils.str_split(line, " ");
+            var tokens = try utils.strSplit(line, " ");
             var file_size = try std.fmt.parseUnsigned(u32, tokens[0], 10);
             var new_file = try cwd.mkfile(allocator, tokens[1], file_size);
             try cwd.node.dir.nodes.append(new_file);

@@ -10,10 +10,10 @@ fn solve_1(allocator: std.mem.Allocator, data: []const u8) !u64 {
     var overlaps: u32 = 0;
     var lines = std.mem.tokenize(u8, data, "\n");
     while (lines.next()) |line| {
-        const sections = try utils.str_split(line, ",");
+        const sections = try utils.strSplit(line, ",");
 
-        const elf1 = try utils.str_split(sections[0], "-");
-        const elf2 = try utils.str_split(sections[1], "-");
+        const elf1 = try utils.strSplit(sections[0], "-");
+        const elf2 = try utils.strSplit(sections[1], "-");
 
         const elf1_start = try std.fmt.parseUnsigned(u32, elf1[0], 10);
         const elf1_end = try std.fmt.parseUnsigned(u32, elf1[1], 10);
@@ -39,10 +39,10 @@ fn solve_2(allocator: std.mem.Allocator, data: []const u8) !u64 {
     var overlaps: u32 = 0;
     var lines = std.mem.tokenize(u8, data, "\n");
     while (lines.next()) |line| {
-        const sections = try utils.str_split(line, ",");
+        const sections = try utils.strSplit(line, ",");
 
-        const elf1 = try utils.str_split(sections[0], "-");
-        const elf2 = try utils.str_split(sections[1], "-");
+        const elf1 = try utils.strSplit(sections[0], "-");
+        const elf2 = try utils.strSplit(sections[1], "-");
 
         const elf1_start = try std.fmt.parseUnsigned(u32, elf1[0], 10);
         const elf1_end = try std.fmt.parseUnsigned(u32, elf1[1], 10);

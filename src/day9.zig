@@ -115,7 +115,7 @@ fn solve_1(allocator: std.mem.Allocator, data: []const u8) !u64 {
     var lines = std.mem.tokenize(u8, data, "\n");
     while (lines.next()) |line| {
         if (line.len == 0) continue;
-        const tokens = try utils.str_split(line, " ");
+        const tokens = try utils.strSplit(line, " ");
         var dist: i32 = try std.fmt.parseInt(i32, tokens[1], 10);
         switch (tokens[0][0]) {
             'D' => {
@@ -168,7 +168,7 @@ fn solve_1(allocator: std.mem.Allocator, data: []const u8) !u64 {
     lines.reset();
     while (lines.next()) |line| {
         if (line.len == 0) continue;
-        const tokens = try utils.str_split(line, " ");
+        const tokens = try utils.strSplit(line, " ");
         var dist: u32 = try std.fmt.parseUnsigned(u8, tokens[1], 10);
         var i: u8 = 0;
 
@@ -203,7 +203,7 @@ fn solve_2(allocator: std.mem.Allocator, data: []const u8) !u64 {
     var lines = std.mem.tokenize(u8, data, "\n");
     while (lines.next()) |line| {
         if (line.len == 0) continue;
-        const tokens = try utils.str_split(line, " ");
+        const tokens = try utils.strSplit(line, " ");
         var dist: i32 = try std.fmt.parseInt(i32, tokens[1], 10);
         switch (tokens[0][0]) {
             'D' => {
@@ -253,7 +253,7 @@ fn solve_2(allocator: std.mem.Allocator, data: []const u8) !u64 {
     lines.reset();
     while (lines.next()) |line| {
         if (line.len == 0) continue;
-        const tokens = try utils.str_split(line, " ");
+        const tokens = try utils.strSplit(line, " ");
         var dist: u32 = try std.fmt.parseUnsigned(u8, tokens[1], 10);
         var i: u8 = 0;
 
