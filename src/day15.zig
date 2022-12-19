@@ -51,14 +51,13 @@ const Sensor = struct {
         } else {
             xd = (self.d - yd) - (x - self.x);
         }
-        //std.debug.print("|{},{} {},{} {}| ", .{x,y,xd,yd,self.d});
         return xd + x;
     }
 };
 
 fn dist(a: i64, b: i64) i64 {
     @setRuntimeSafety(false);
-    return if (a > b) a-b else b-a;
+    return if (a > b) a - b else b - a;
 }
 
 fn solve_1(allocator: std.mem.Allocator, data: []const u8, row: i64) !u64 {
@@ -128,11 +127,6 @@ fn solve_2(allocator: std.mem.Allocator, data: []const u8, xrange: i64, yrange: 
         });
     }
 
-    //for (sensors.items) |item,i| {
-    //    std.debug.print("[{}]: {}\n", .{i, item});
-    //}
-
-
     const Method = enum {
         brute,
         skip_x,
@@ -141,7 +135,7 @@ fn solve_2(allocator: std.mem.Allocator, data: []const u8, xrange: i64, yrange: 
     switch (method) {
         .skip_x => {
             var y: i64 = 0;
-            while (y <= yrange) : ( y += 1 ) {
+            while (y <= yrange) : (y += 1) {
                 var x: i64 = 0;
                 while (x <= xrange) : (x += 1) {
                     for (sensors.items) |item| {
@@ -151,7 +145,7 @@ fn solve_2(allocator: std.mem.Allocator, data: []const u8, xrange: i64, yrange: 
                         }
                     } else {
                         //std.debug.print("FOUND at {} {}\n", .{x,y});
-                        return x*4000000 + y;
+                        return x * 4000000 + y;
                     }
                 }
             }
@@ -159,9 +153,9 @@ fn solve_2(allocator: std.mem.Allocator, data: []const u8, xrange: i64, yrange: 
         .brute => {
             var last = &sensors.items[0];
             var y: i64 = 0;
-            while (y <= yrange) : ( y += 1 ) {
+            while (y <= yrange) : (y += 1) {
                 var x: i64 = 0;
-                while (x <= xrange) : ( x+= 1 ) {
+                while (x <= xrange) : (x += 1) {
                     if (last.inRange(x, y, false)) continue;
 
                     for (sensors.items) |*item| {
@@ -171,12 +165,12 @@ fn solve_2(allocator: std.mem.Allocator, data: []const u8, xrange: i64, yrange: 
                         }
                     } else {
                         //std.debug.print("FOUND at {} {}\n", .{x,y});
-                        return x*4000000 + y;
+                        return x * 4000000 + y;
                     }
                 }
                 if (@intCast(u64, y) % 1000 == 0) std.debug.print("{}\n", .{y});
             }
-        }
+        },
     }
     return -1;
 }
