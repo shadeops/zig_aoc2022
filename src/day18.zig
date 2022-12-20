@@ -66,7 +66,6 @@ fn neighbourIterator(offset: usize) NeighbourIterator {
 }
 
 fn full_scan(voxels: []const bool) !u64 {
-
     var surface: u32 = 0;
     for (voxels) |voxel, i| {
         if (!voxel) continue;
@@ -83,17 +82,17 @@ fn full_scan(voxels: []const bool) !u64 {
 }
 
 fn exterior_scan(allocator: std.mem.Allocator, voxels: []const bool) !u64 {
-   
+
     // NOTES: Could be optimized with various flood fill algorithms
     var checked_voxels = try allocator.alloc(bool, voxels.len);
     defer allocator.free(checked_voxels);
     for (checked_voxels) |*voxel| voxel.* = false;
-    
+
     var queue = std.ArrayList(usize).init(allocator);
     defer queue.deinit();
 
     var surface: u32 = 0;
-    
+
     // start scan of empty connected voxels
     try queue.append(0);
     while (queue.items.len != 0) {
@@ -148,7 +147,6 @@ fn solve(allocator: std.mem.Allocator, data: []const u8, interior: bool) !u64 {
         return full_scan(voxels);
     return exterior_scan(allocator, voxels);
 }
-    
 
 pub fn main() !void {
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
