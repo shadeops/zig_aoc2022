@@ -50,7 +50,7 @@ fn canMove(move: u8, piece: []Row, base_row: usize, board: std.ArrayList(Row)) b
     return true;
 }
 
-fn printBoard(board: []const Row) void { 
+fn printBoard(board: []const Row) void {
     var i: usize = 0;
     var iter = std.mem.reverseIterator(board);
     while (iter.next()) |row| {

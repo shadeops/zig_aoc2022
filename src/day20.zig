@@ -11,7 +11,6 @@ const Node = struct {
 };
 
 fn solve(allocator: std.mem.Allocator, data: []const u8, key: i64, mix: u32) !i64 {
-
     var vals = std.ArrayList(*Node).init(allocator);
     defer {
         for (vals.items) |val| allocator.destroy(val);
@@ -27,36 +26,36 @@ fn solve(allocator: std.mem.Allocator, data: []const u8, key: i64, mix: u32) !i6
         try vals.append(new_node);
     }
 
-    for (vals.items[1..]) |val,i| {
+    for (vals.items[1..]) |val, i| {
         val.prev = vals.items[i];
     }
-    vals.items[0].prev = vals.items[vals.items.len-1];
+    vals.items[0].prev = vals.items[vals.items.len - 1];
 
-    for (vals.items[0..vals.items.len-1]) |val,i| {
-        val.next = vals.items[i+1];
+    for (vals.items[0 .. vals.items.len - 1]) |val, i| {
+        val.next = vals.items[i + 1];
     }
-    vals.items[vals.items.len-1].next = vals.items[0];
+    vals.items[vals.items.len - 1].next = vals.items[0];
 
     var mix_loop: u32 = 0;
     while (mix_loop < mix) : (mix_loop += 1) {
         for (vals.items) |val| {
             if (val.v == 0) continue;
-            
+
             var i: usize = 0;
             var current_node: ?*Node = val;
 
             // update links, first val's original neighbours
             val.prev.?.next = val.next;
             val.next.?.prev = val.prev;
-            
+
             if (val.v < 0) {
-                const mixes = @intCast(u64, -val.v)%(vals.items.len-1) + 1;
-                while (i < mixes) : (i+=1) {
+                const mixes = @intCast(u64, -val.v) % (vals.items.len - 1) + 1;
+                while (i < mixes) : (i += 1) {
                     current_node = current_node.?.prev;
                 }
             } else {
-                const mixes = @intCast(u64,val.v) % (vals.items.len-1);
-                while (i < mixes) : (i+=1) {
+                const mixes = @intCast(u64, val.v) % (vals.items.len - 1);
+                while (i < mixes) : (i += 1) {
                     current_node = current_node.?.next;
                 }
             }
@@ -74,10 +73,10 @@ fn solve(allocator: std.mem.Allocator, data: []const u8, key: i64, mix: u32) !i6
     var c: *Node = starter_node.?;
     var i: usize = 0;
     var coord: i64 = 0;
-    while (i <= 3000) : (i+=1) {
-        if (i==1000) coord += c.v;
-        if (i==2000) coord += c.v;
-        if (i==3000) coord += c.v;
+    while (i <= 3000) : (i += 1) {
+        if (i == 1000) coord += c.v;
+        if (i == 2000) coord += c.v;
+        if (i == 3000) coord += c.v;
         c = c.next.?;
     }
 
@@ -103,7 +102,7 @@ pub fn main() !void {
     const stdout = stdout_bw.writer();
 
     try stdout.print("{s}:\n", .{unit_name});
-    try stdout.print("\tpart_1 = {}\n", .{try solve(allocator, data, 1 ,1)});
+    try stdout.print("\tpart_1 = {}\n", .{try solve(allocator, data, 1, 1)});
     try stdout_bw.flush();
     try stdout.print("\tpart_2 = {}\n", .{try solve(allocator, data, 811589153, 10)});
     try stdout_bw.flush();

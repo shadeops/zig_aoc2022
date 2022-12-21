@@ -90,7 +90,6 @@ fn dual_solver(
     time_a: i32,
     time_b: i32,
 ) u32 {
-
     _ = current_a;
     _ = current_b;
     _ = visited;
