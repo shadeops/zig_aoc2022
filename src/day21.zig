@@ -14,6 +14,7 @@ const Operator = enum {
 const MonkeyType = enum {
     math,
     yell,
+    unk,
 };
 
 const MathMonkey = struct {
@@ -26,14 +27,19 @@ const YellMonkey = struct {
     val: i64,
 };
 
+const UnknownMonkey = struct {
+};
+
 const Monkey = union(MonkeyType) {
     math: MathMonkey,
     yell: YellMonkey,
+    unk: UnknownMonkey,
 };
 
 fn solve(name: []const u8, ops: std.StringHashMap(Monkey)) i64 {
     const monkey = ops.get(name) orelse unreachable;
     return switch (monkey) {
+        .unk => unreachable,
         .yell => |m| m.val,
         .math => |m| blk: {
             break :blk switch (m.operator) {
@@ -79,8 +85,8 @@ fn makeMonkeys(allocator: std.mem.Allocator, data: []const u8) !std.StringHashMa
 
 fn findHumnOp(name: []const u8, ops: std.StringHashMap(Monkey)) ?Monkey {
     const monkey = ops.get(name) orelse unreachable;
-    if (std.mem.eql(u8, name, "humn")) return monkey;
     return switch (monkey) {
+        .unk => monkey,
         .yell => null,
         .math => |m| blk: {
             if (std.mem.eql(u8, m.operand_a, "humn")) return monkey;
@@ -93,8 +99,9 @@ fn findHumnOp(name: []const u8, ops: std.StringHashMap(Monkey)) ?Monkey {
 fn unsolve(name: []const u8, lhs: i64, ops: std.StringHashMap(Monkey)) i64 {
     const monkey = ops.get(name) orelse unreachable;
     switch (monkey) {
+        .unk => return lhs,
         .yell => |m| {
-            return if (std.mem.eql(u8, "humn", name)) lhs else m.val;
+            return m.val;
         },
         .math => |m| {
             var a: ?i64 = null;
@@ -144,6 +151,7 @@ fn solve_2(allocator: std.mem.Allocator, data: []const u8) !i64 {
     var monkey_ops = try makeMonkeys(allocator, data);
     defer monkey_ops.deinit();
 
+    try monkey_ops.put("humn", .{.unk = .{}});
     const root = monkey_ops.get("root") orelse unreachable;
     const a = root.math.operand_a;
     const b = root.math.operand_b;
